@@ -1,0 +1,14 @@
+/build
+/install
+/log
+/build_isolated
+/install_isolated
+/devel
+
+__pycache__/
+.eggs/
+
+.DS_Store
+.vscode/
+.vs/
+*.ipynb_checkpoints/
