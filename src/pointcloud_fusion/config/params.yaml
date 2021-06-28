@@ -1,0 +1,4 @@
+pointcloud_fusion:
+  ros__parameters:
+    fused_frame_name: "base_link"
+    fused_point_cloud_max_capacity: 55000

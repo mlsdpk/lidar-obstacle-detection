@@ -41,4 +41,7 @@ private:
 
     // final fused point cloud msg object
     PointCloudMsg fused_point_cloud_;
+
+    std::string fused_frame_name_;
+    uint32_t fused_point_cloud_max_capacity_;
 };

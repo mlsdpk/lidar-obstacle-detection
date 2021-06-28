@@ -2,7 +2,9 @@
 
 PointCloudFusionNode::PointCloudFusionNode()
     : Node("pointcloud_fusion"),
-      fused_point_cloud_publisher_{create_publisher<PointCloudMsg>("/fused_lidar/points_raw", 10)} {
+      fused_point_cloud_publisher_{create_publisher<PointCloudMsg>("output", 10)},
+      fused_frame_name_{declare_parameter("fused_frame_name").get<std::string>()},
+      fused_point_cloud_max_capacity_{static_cast<uint32_t>(declare_parameter("fused_point_cloud_max_capacity").get<int>())} {
     RCLCPP_INFO(this->get_logger(), "pointcloud_fusion node has been created.");
 
     // initialize fused point cloud message
@@ -10,7 +12,7 @@ PointCloudFusionNode::PointCloudFusionNode()
     fused_point_cloud_.is_bigendian = false;
     fused_point_cloud_.is_dense = false;
     // TODO: pass frame name and cloud capacity as ros 2 parameter
-    fused_point_cloud_.header.frame_id = "lidar_frame";
+    fused_point_cloud_.header.frame_id = fused_frame_name_;
     sensor_msgs::PointCloud2Modifier modifier(fused_point_cloud_);
     modifier.setPointCloud2Fields(
         4,
@@ -19,17 +21,17 @@ PointCloudFusionNode::PointCloudFusionNode()
         "z", 1U, sensor_msgs::msg::PointField::FLOAT32,
         "intensity", 1U, sensor_msgs::msg::PointField::FLOAT32
     );
-    modifier.resize(55000);
+    modifier.resize(fused_point_cloud_max_capacity_);
 
     // initialize front and rear lidar subscriber objects
     // TODO: pass topic names as ros 2 parameters
     front_lidar_subscriber_ = std::make_unique<message_filters::Subscriber<PointCloudMsg>>(
         this,
-        "/lidar_front/points_raw"
+        "input1"
     );
     rear_lidar_subscriber_ = std::make_unique<message_filters::Subscriber<PointCloudMsg>>(
         this,
-        "/lidar_rear/points_raw"
+        "input2"
     );
 
     // initialize message filter stuffs
@@ -57,7 +59,7 @@ void PointCloudFusionNode::pointCloudCallback(
     // reset fused point cloud message
     sensor_msgs::PointCloud2Modifier modifier(fused_point_cloud_);
     modifier.clear();
-    modifier.resize(55000);
+    modifier.resize(fused_point_cloud_max_capacity_);
 
     // get latest timestamp
     auto latest_timestamp = msg1->header.stamp;
