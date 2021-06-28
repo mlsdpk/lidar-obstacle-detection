@@ -10,6 +10,34 @@ PointCloudFusionNode::PointCloudFusionNode()
           declare_parameter("fused_point_cloud_max_capacity").get<int>())} {
   RCLCPP_INFO(this->get_logger(), "pointcloud_fusion node has been created.");
 
+	/////////////////////////////////////////////////////////////////
+  // find static tfs from lidar_front and lidar_rear to base_link
+  // lookup from /tf or /static_tf topics
+
+  // tf2 buffer
+  tf2_ros::Buffer tf2_buffer(this->get_clock());
+  // tf2 listener
+  tf2_ros::TransformListener tf2_listener(tf2_buffer);
+
+  while (rclcpp::ok()) {
+    try {
+      RCLCPP_INFO(get_logger(), "Looking up the transform.");
+      tx_front_lidar_ = tf2_buffer.lookupTransform(
+          fused_frame_name_, "lidar_front", tf2::TimePointZero);
+      tx_rear_lidar_ = tf2_buffer.lookupTransform(
+          fused_frame_name_, "lidar_rear", tf2::TimePointZero);
+      break;
+    } catch (const std::exception &transform_exception) {
+      RCLCPP_INFO(get_logger(),
+                  "No transform was available. Retrying after 100 ms.");
+      std::this_thread::sleep_for(std::chrono::milliseconds(100));
+      continue;
+    }
+  }
+
+	RCLCPP_INFO(get_logger(), "Found transform.");
+	/////////////////////////////////////////////////////////////////
+
   // initialize fused point cloud message
   fused_point_cloud_.height = 1U;
   fused_point_cloud_.is_bigendian = false;
@@ -108,6 +136,8 @@ void PointCloudFusionNode::concatenatePointCloud(const PointCloudMsg &pc_in,
     auto y_in = *y_it_in;
     auto z_in = *z_it_in;
     auto intensity_in = *intensity_it_in;
+
+    // apply static transform to input point
 
     // add input to output msg if its idx is not at the end of iter
     if (x_it_out != x_it_out.end() && y_it_out != y_it_out.end() &&
