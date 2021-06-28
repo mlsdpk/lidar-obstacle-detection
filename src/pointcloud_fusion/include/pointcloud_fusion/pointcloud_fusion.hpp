@@ -7,6 +7,8 @@
 #include <tf2_ros/buffer.h>
 #include <tf2_ros/transform_listener.h>
 
+#include <Eigen/Core>
+#include <Eigen/Geometry>
 #include <sensor_msgs/msg/point_cloud2.hpp>
 #include <sensor_msgs/point_cloud2_iterator.hpp>
 
@@ -27,11 +29,14 @@ class PointCloudFusionNode : public rclcpp::Node {
                           const PointCloudMsg::ConstSharedPtr &msg2);
 
   void concatenatePointCloud(const PointCloudMsg &pc_in, PointCloudMsg &pc_out,
-                             uint32_t &concat_idx);
+                             uint32_t &concat_idx,
+                             const Eigen::Affine3f &affine_tf);
 
-  // transform between lidar frame and base link
-  geometry_msgs::msg::TransformStamped tx_front_lidar_;
-  geometry_msgs::msg::TransformStamped tx_rear_lidar_;
+  void convertToAffine3f(const geometry_msgs::msg::Transform &tf,
+                         Eigen::Affine3f &af);
+
+  Eigen::Affine3f affine3f_front_lidar_;
+  Eigen::Affine3f affine3f_rear_lidar_;
 
   // message filter synchronizer object
   std::unique_ptr<message_filters::Synchronizer<SyncPolicy>>
