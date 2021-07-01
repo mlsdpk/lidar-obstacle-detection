@@ -18,7 +18,7 @@ First, source the setup.bash file in the ROS 2 build workspace.
 source ~/ros2_ws/install/setup.bash 
 ```
 
-Close this workspace to the desire directory.
+Clone this workspace to the desire directory.
 
 ```
 git clone https://github.com/mlsdpk/lidar-obstacle-detection
