@@ -1,7 +1,8 @@
 #include "pointcloud_fusion/pointcloud_fusion.hpp"
 
-PointCloudFusionNode::PointCloudFusionNode()
-    : Node("pointcloud_fusion"),
+namespace pointcloud_fusion {
+PointCloudFusionNode::PointCloudFusionNode(const rclcpp::NodeOptions &options)
+    : Node("pointcloud_fusion", options),
       fused_point_cloud_publisher_{
           create_publisher<PointCloudMsg>("output", 10)},
       fused_frame_name_{
@@ -202,3 +203,11 @@ void PointCloudFusionNode::concatenatePointCloud(
     ++intensity_it_out;
   }
 }
+}  // namespace pointcloud_fusion
+
+#include "rclcpp_components/register_node_macro.hpp"
+
+// Register the component with class_loader.
+// This acts as a sort of entry point, allowing the component to be discoverable
+// when its library is being loaded into a running process.
+RCLCPP_COMPONENTS_REGISTER_NODE(pointcloud_fusion::PointCloudFusionNode)

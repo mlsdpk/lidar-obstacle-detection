@@ -13,11 +13,13 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rclcpp_components REQUIRED)
 
-# manually adding files for now
-# later update it to SHARED LIB and components
-add_executable(voxelgrid_filtering_node 
-  src/voxelgrid_filtering_node.cpp
+# set library name
+set(NODE_LIB voxelgrid_filtering_node)
+
+# build node as library
+add_library(${NODE_LIB} SHARED
   src/voxelgrid_filtering.cpp
   include/voxelgrid_filtering/voxelgrid_filtering.hpp
 )
@@ -30,6 +32,24 @@ target_include_directories(voxelgrid_filtering_node
 
 ament_target_dependencies(voxelgrid_filtering_node 
   rclcpp
+  rclcpp_components
+)
+
+rclcpp_components_register_node(${NODE_LIB}
+  PLUGIN "voxelgrid_filtering::VoxelGridFilterNode"
+  EXECUTABLE ${NODE_LIB}_exe
+)
+
+# install library
+install(TARGETS ${NODE_LIB}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
+
+# install executable
+install(TARGETS ${NODE_LIB}_exe
+  DESTINATION lib/${PROJECT_NAME}
 )
 
 ament_package()

@@ -14,9 +14,10 @@
 
 #include "rclcpp/rclcpp.hpp"
 
+namespace pointcloud_fusion {
 class PointCloudFusionNode : public rclcpp::Node {
  public:
-  PointCloudFusionNode();
+  PointCloudFusionNode(const rclcpp::NodeOptions &options);
 
  private:
   using PointCloudMsg = sensor_msgs::msg::PointCloud2;
@@ -57,3 +58,4 @@ class PointCloudFusionNode : public rclcpp::Node {
   std::string fused_frame_name_;
   uint32_t fused_point_cloud_max_capacity_;
 };
+}  // namespace pointcloud_fusion

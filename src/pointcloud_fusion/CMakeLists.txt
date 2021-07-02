@@ -13,16 +13,18 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rclcpp_components REQUIRED)
 find_package(message_filters REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 
-# manually adding files for now
-# later update it to SHARED LIB and components
-add_executable(pointcloud_fusion_node 
-  src/pointcloud_fusion_node.cpp
+# set library name
+set(NODE_LIB pointcloud_fusion_node)
+
+# build node as shared library
+add_library(${NODE_LIB} SHARED
   src/pointcloud_fusion.cpp
   include/pointcloud_fusion/pointcloud_fusion.hpp
 )
@@ -35,6 +37,7 @@ target_include_directories(pointcloud_fusion_node
 
 ament_target_dependencies(pointcloud_fusion_node 
   rclcpp
+  rclcpp_components
   message_filters
   sensor_msgs
   tf2
@@ -42,8 +45,20 @@ ament_target_dependencies(pointcloud_fusion_node
   tf2_geometry_msgs
 )
 
-install(TARGETS
-  pointcloud_fusion_node
+rclcpp_components_register_node(${NODE_LIB}
+  PLUGIN "pointcloud_fusion::PointCloudFusionNode"
+  EXECUTABLE ${NODE_LIB}_exe
+)
+
+# install library
+install(TARGETS ${NODE_LIB}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
+
+# install executable
+install(TARGETS ${NODE_LIB}_exe
   DESTINATION lib/${PROJECT_NAME}
 )
 
