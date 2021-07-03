@@ -32,3 +32,25 @@ Build the workspace.
 cd lidar-obstacle-detection
 colcon build
 ```
+
+## Usage
+
+> Before launching any launch files, make sure that SVL Simulator is launched. This project assumes using Lexus2016RXHybrid vehicle with Autoware.Auto Sensor Configurations. You can find more information [here](https://www.svlsimulator.com/docs/system-under-test/autoware-auto-instructions/) for running the SVL Simulator with Lexus2016RXHybrid vehicle.
+
+### 1. Running the ROS2 LGSVL Bridge
+
+In order to connect SVL Simulator with ROS, we need to use ROS2 LGSVL Bridge. Follow [this guide](https://www.svlsimulator.com/docs/system-under-test/ros2-bridge/) for installing ros2 lgsvl bridge.
+
+```
+source $(path/to/bridge/repository)/install/setup.bash
+lgsvl_bridge
+```
+
+### 2. Launching Lexus2016RXHybrid vehicle urdf description
+
+This package will launch all the necessary tf information for Lexus2016RXHybrid vehicle. This is a modified version of lexus_rx_450h_description package from [Autoware.Auto gitlab repo](https://gitlab.com/autowarefoundation/autoware.auto/AutowareAuto/-/tree/master/src/urdf/lexus_rx_450h_description). You will see the rviz2 window pop up together with vehicle model.
+
+```
+source $(path/to/this/repository)/install/setup.bash
+ros2 launch lexus_rx_450h_description lexus_rx_450h_visualisation.launch.py 
+```
