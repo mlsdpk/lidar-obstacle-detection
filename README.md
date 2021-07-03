@@ -10,6 +10,8 @@
 
 - SVL Simulator ROS 2 Bridge ([click here for installation instructions](https://www.svlsimulator.com/docs/system-under-test/ros2-bridge/))
 
+- PCL 1.11.1 ([click here for installation instructions](https://pcl.readthedocs.io/projects/tutorials/en/latest/compiling_pcl_posix.html))
+
 ## Build Instructions
 
 First, source the setup.bash file in the ROS 2 build workspace.

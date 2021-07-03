@@ -20,22 +20,7 @@ find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 
-# set library name
-set(NODE_LIB pointcloud_fusion_node)
-
-# build node as shared library
-add_library(${NODE_LIB} SHARED
-  src/pointcloud_fusion.cpp
-  include/pointcloud_fusion/pointcloud_fusion.hpp
-)
-
-target_include_directories(pointcloud_fusion_node
-  PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>
-)
-
-ament_target_dependencies(pointcloud_fusion_node 
+set(dependencies
   rclcpp
   rclcpp_components
   message_filters
@@ -45,19 +30,40 @@ ament_target_dependencies(pointcloud_fusion_node
   tf2_geometry_msgs
 )
 
+set(NODE_LIB pointcloud_fusion_node)
+
+add_library(${NODE_LIB} SHARED
+  src/pointcloud_fusion.cpp
+)
+
+target_include_directories(pointcloud_fusion_node
+  PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+)
+
+ament_target_dependencies(${NODE_LIB} 
+  ${dependencies}
+)
+
 rclcpp_components_register_node(${NODE_LIB}
   PLUGIN "pointcloud_fusion::PointCloudFusionNode"
   EXECUTABLE ${NODE_LIB}_exe
 )
 
-# install library
+install(
+  DIRECTORY include/
+  DESTINATION include
+)
+
 install(TARGETS ${NODE_LIB}
+  EXPORT export_${NODE_LIB}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
+  INCLUDES DESTINATION include
 )
 
-# install executable
 install(TARGETS ${NODE_LIB}_exe
   DESTINATION lib/${PROJECT_NAME}
 )
@@ -68,4 +74,8 @@ install(DIRECTORY
   DESTINATION share/${PROJECT_NAME}/
 )
 
+ament_export_include_directories(include)
+ament_export_libraries(${NODE_LIB})
+ament_export_dependencies(${dependencies})
+ament_export_targets(export_${NODE_LIB} HAS_LIBRARY_TARGET)
 ament_package()

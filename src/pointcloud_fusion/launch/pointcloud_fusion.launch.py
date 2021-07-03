@@ -12,7 +12,7 @@ point_cloud_fusion_node_param_file = os.path.join(point_cloud_fusion_node_pkg_pr
 def generate_launch_description():
     pointcloud_fusion_node = Node(
         package='pointcloud_fusion',
-        executable='pointcloud_fusion_node',
+        executable='pointcloud_fusion_node_exe',
         parameters=[point_cloud_fusion_node_param_file],
         remappings=[
             ("output", "/lidar_fused/transformed_points_raw"),
