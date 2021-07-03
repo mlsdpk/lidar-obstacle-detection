@@ -1,0 +1,6 @@
+voxelgrid_filtering:
+  ros__parameters:
+    voxel_leaf_size:
+      x: 0.2
+      y: 0.2
+      z: 0.2
