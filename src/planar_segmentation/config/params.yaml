@@ -1,0 +1,4 @@
+planar_segmentation:
+  ros__parameters:
+    max_iterations: 100
+    distance_threshold: 0.3
