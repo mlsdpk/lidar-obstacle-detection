@@ -2,6 +2,8 @@
 
 3D object detection pipeline using Lidar. This project is based on ROS2 and SVL simulator.
 
+![](imgs/img0.png)
+
 ## Dependencies
 
 - SVL Simulator ([click here for installation instructions](https://www.svlsimulator.com/docs/installation-guide/installing-simulator/))
