@@ -54,3 +54,30 @@ This package will launch all the necessary tf information for Lexus2016RXHybrid 
 source $(path/to/this/repository)/install/setup.bash
 ros2 launch lexus_rx_450h_description lexus_rx_450h_visualisation.launch.py 
 ```
+
+### 3. Launching pointcloud fusion node
+
+This package will fuse incoming pointcloud data from two lidars and output as one single raw pointcloud data. Transformations of pointclouds from both lidars's frame to baselink of the vehicle is also taken care in this package.
+
+```
+source $(path/to/this/repository)/install/setup.bash
+ros2 launch pointcloud_fusion pointcloud_fusion.launch.py
+```
+
+### 4. Launching filtering node
+
+This project implements the voxel grid filtering for downsampling the raw fused pointcloud data by utilizing the popular PCL library.
+
+```
+source $(path/to/this/repository)/install/setup.bash
+ros2 launch voxelgrid_filtering voxelgrid_filtering.launch.py
+```
+
+### 5. Launching segmentation node
+
+In order to detect obstacles in the scene, removing unnecessary points from the pointcloud data is essential for the clustering algorithms. This package uses RANSAC algorithm to segment the ground points and the obstacle points from the fused filtered pointcloud data.
+
+```
+source $(path/to/this/repository)/install/setup.bash
+ros2 launch planar_segmentation planar_segmentation.launch.py
+```
