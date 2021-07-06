@@ -1,12 +1,7 @@
 #pragma once
 
-#include <pcl/PCLHeader.h>
-#include <pcl/PCLPointCloud2.h>
-#include <pcl/PCLPointField.h>
 #include <pcl/filters/voxel_grid.h>
-#include <pcl/io/pcd_io.h>
-#include <pcl/pcl_base.h>
-#include <pcl/point_types.h>
+#include <pcl_conversions/pcl_conversions.h>
 
 #include <sensor_msgs/msg/point_cloud2.hpp>
 #include <string>

@@ -14,6 +14,7 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(pcl_conversions REQUIRED)
 
 find_package(PCL 1.11.1 REQUIRED QUIET COMPONENTS common io filters)
 include_directories(${PCL_INCLUDE_DIRS})
@@ -29,6 +30,7 @@ set(dependencies
   rclcpp_components
   sensor_msgs
   PCL
+  pcl_conversions
 )
 
 include_directories(
